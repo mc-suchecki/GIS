@@ -7,16 +7,16 @@ import java.util.Set;
 
 public class Graph {
     private final Map<String, Node> labelsToNodesMap;
-    private final Set<UndirectedEdge> edges;
+    private final Set<UndirectedEdge> undirectedEdges;
 
-    public Graph(final Map<String, Node> labelsToNodesMap, final Set<UndirectedEdge> edges) {
+    public Graph(final Map<String, Node> labelsToNodesMap, final Set<UndirectedEdge> undirectedEdges) {
         this.labelsToNodesMap = labelsToNodesMap;
-        this.edges = edges;
+        this.undirectedEdges = undirectedEdges;
     }
 
     public List<Node> getNodesList() {
-        List<Node> nodesList = new ArrayList<Node>();
-        for (Node node : labelsToNodesMap.values()) {
+        final List<Node> nodesList = new ArrayList<Node>();
+        for (final Node node : labelsToNodesMap.values()) {
             nodesList.add(node);
         }
         return nodesList;

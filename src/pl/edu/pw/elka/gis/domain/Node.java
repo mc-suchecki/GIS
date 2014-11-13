@@ -3,7 +3,7 @@ package pl.edu.pw.elka.gis.domain;
 import java.util.Objects;
 
 public class Node {
-    private String label;
+    private final String label;
 
     public Node(final String label) {
         this.label = label;

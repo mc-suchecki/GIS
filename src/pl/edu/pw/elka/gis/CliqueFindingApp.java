@@ -2,6 +2,8 @@ package pl.edu.pw.elka.gis;
 
 import pl.edu.pw.elka.gis.domain.Clique;
 import pl.edu.pw.elka.gis.domain.Graph;
+import pl.edu.pw.elka.gis.io.CliquesPrinter;
+import pl.edu.pw.elka.gis.io.ConsoleCliquePrinter;
 import pl.edu.pw.elka.gis.io.GraphReader;
 import pl.edu.pw.elka.gis.solver.CliqueFinder;
 
@@ -16,10 +18,10 @@ public class CliqueFindingApp {
 
             final CliqueFinder cliqueFinder = new CliqueFinder();
             final List<Clique> cliquesList = cliqueFinder.findCliques(graph);
-            //TODO
-        }
-        catch (final Exception e)
-        {
+
+            final CliquesPrinter printer = new ConsoleCliquePrinter();
+            printer.print(cliquesList);
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

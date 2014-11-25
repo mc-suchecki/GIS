@@ -1,5 +1,6 @@
 package pl.edu.pw.elka.gis.io;
 
+import pl.edu.pw.elka.gis.domain.DirectedEdge;
 import pl.edu.pw.elka.gis.domain.Graph;
 import pl.edu.pw.elka.gis.domain.Node;
 import pl.edu.pw.elka.gis.domain.UndirectedEdge;
@@ -12,13 +13,25 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Reads directed graph and converts it to undirected graph by substituting
+ * each pair of edges (i,j) and (j,i) with a single undirected edge (unpaired
+ * directed edges are removed from the result graph).
+ * <p/>
+ * Source file contains information about directed graph which is defined
+ * in the following manner: each line contains a single directed edge
+ * in format LABEL LABEL where the former label is the label of a source node
+ * and the latter is the label of a destination node.
+ */
 public class GraphReader {
     private static final String INPUT_FILE_NAME = "input_graph.txt";
-    private static final String LINE_FORMAT_MESSAGE = "Each line should have the following format: LABEL LABEL";
+    private static final String LINE_FORMAT_MESSAGE =
+            "Each line should have the following format: \"LABEL LABEL\n\"" +
+                    "where former is the label of source node and the latter is the label of destination node.";
 
     private Map<String, Node> nodeMap;
-    private Set<UndirectedEdge> unidirectionalEdgesSet;
-    private Set<UndirectedEdge> bidirectionalEdgesSet;
+    private Set<DirectedEdge> directedEdgesSet;
+    private Set<UndirectedEdge> undirectedEdgesSet;
 
     public Graph read() throws IOException, MultipleInvocationException, InvalidDataFormatException {
         initReader();
@@ -30,16 +43,16 @@ public class GraphReader {
             }
         }
 
-        return new Graph(nodeMap, bidirectionalEdgesSet);
+        return new Graph(nodeMap, undirectedEdgesSet);
     }
 
     private void initReader() throws MultipleInvocationException {
-        if (nodeMap != null || bidirectionalEdgesSet != null || unidirectionalEdgesSet != null) {
+        if (nodeMap != null || undirectedEdgesSet != null || directedEdgesSet != null) {
             throw new MultipleInvocationException();
         } else {
             nodeMap = new HashMap<>();
-            unidirectionalEdgesSet = new HashSet<>();
-            bidirectionalEdgesSet = new HashSet<>();
+            directedEdgesSet = new HashSet<>();
+            undirectedEdgesSet = new HashSet<>();
         }
     }
 
@@ -51,11 +64,16 @@ public class GraphReader {
         }
 
         final Node srcNode = getOrCreateNode(tokens[0]);
-        final Node destNode = getOrCreateNode(tokens[1]);
+        final Node dstNode = getOrCreateNode(tokens[1]);
+        final DirectedEdge readEdge = new DirectedEdge(dstNode, srcNode);
+        final DirectedEdge reverseEdge = new DirectedEdge(srcNode, dstNode);
 
-        if(unidirectionalEdgesSet.contains(new UndirectedEdge(destNode,srcNode)))
-        {
-            //TODO
+        final boolean added = directedEdgesSet.add(readEdge);
+        if (!added) {
+            throw new InvalidDataFormatException("Multigraphs are not allowed");
+        }
+        if (directedEdgesSet.contains(reverseEdge)) {
+            undirectedEdgesSet.add(new UndirectedEdge(srcNode, dstNode));
         }
     }
 

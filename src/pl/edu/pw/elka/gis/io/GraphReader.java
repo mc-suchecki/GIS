@@ -42,8 +42,18 @@ public class GraphReader {
                 processLine(strLine);
             }
         }
+        updateNodesNeighbourhood();
 
-        return new Graph(nodeMap, undirectedEdgesSet);
+        return new Graph(nodeMap);
+    }
+
+    private void updateNodesNeighbourhood() {
+        for (final UndirectedEdge edge : undirectedEdgesSet) {
+            final Node firstNode = edge.getFirst();
+            final Node secondNode = edge.getSecond();
+            firstNode.addNeighbour(secondNode);
+            secondNode.addNeighbour(firstNode);
+        }
     }
 
     private void initReader() throws MultipleInvocationException {

@@ -1,25 +1,25 @@
 package pl.edu.pw.elka.gis.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-public class Node {
+public class Node implements Comparable<Node>{
     private final String label;
-    private final Collection<Node> neighbours;
+    private final Set<Node> neighbours;
 
     public Node(final String label) {
         this.label = label;
-        this.neighbours = new ArrayList<>();
+        this.neighbours = new HashSet<>();
     }
 
     public String getLabel() {
         return label;
     }
 
-    public Collection<Node> getNeighbours() {
-        return Collections.unmodifiableCollection(neighbours);
+    public Set<Node> getNeighbours() {
+        return Collections.unmodifiableSet(neighbours);
     }
 
     /**
@@ -44,5 +44,10 @@ public class Node {
         }
         final Node other = (Node) obj;
         return Objects.equals(this.label, other.label);
+    }
+
+    @Override
+    public int compareTo(final Node n) {
+        return label.compareTo(n.label);
     }
 }

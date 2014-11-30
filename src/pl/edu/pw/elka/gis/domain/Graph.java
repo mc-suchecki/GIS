@@ -15,7 +15,7 @@ public class Graph {
         return new ArrayList<>(labelsToNodesMap.values());
     }
 
-    public Node getNodeByLabel(final String label) {
+    public Node getNode(final String label) {
         return labelsToNodesMap.get(label);
     }
 }

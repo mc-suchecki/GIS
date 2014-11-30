@@ -20,12 +20,12 @@ public class ConsoleCliquePrinter implements CliquesPrinter{
 
     private void print(final Clique clique) {
         final StringBuilder sb = new StringBuilder();
-        for (final Node node : clique.getNodeSet()) {
+        for (final Node node : clique.getNodes()) {
             sb.append(node.getLabel());
             sb.append(" ");
         }
 
-        sb.deleteCharAt(clique.getNodeSet().size() - 1);
+        sb.deleteCharAt(clique.getNodes().size() - 1);
         System.out.println(sb);
     }
 }

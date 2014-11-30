@@ -4,16 +4,16 @@
  */
 package pl.edu.pw.elka.gis.domain;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class Clique {
-    private final Set<Node> nodeSet;
+    private final Collection<Node> nodes;
 
-    public Clique(final Set<Node> nodeSet) {
-        this.nodeSet = nodeSet;
+    public Clique(final Collection<Node> nodes) {
+        this.nodes = nodes;
     }
 
-    public Set<Node> getNodeSet() {
-        return nodeSet;
+    public Collection<Node> getNodes() {
+        return nodes;
     }
 }

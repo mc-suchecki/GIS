@@ -27,28 +27,28 @@ public class CliqueFinder {
 
     //TODO właściwie, to jest gotowe. Trzeba potestować.
     //TODO zaimplementować metodę bardziej skomplikowaną (z pivotem)
-    private void findCliques(final List<Node> candidates, final List<Node> potentialClique,
+    private void findCliques(final List<Node> candidates, final List<Node> partialClique,
                              final List<Node> alreadyFound, final List<Clique> cliques) {
         if (candidates.isEmpty() && alreadyFound.isEmpty()) {
-            cliques.add(new Clique(potentialClique));
+            cliques.add(new Clique(partialClique));
             return;
         }
 
         final Iterator<Node> iterator = candidates.iterator();
         while (iterator.hasNext()) {
-            final Node node = iterator.next();
+            final Node candidate = iterator.next();
 
-            final List<Node> newR = new ArrayList<>(potentialClique.size() + 1);
-            newR.addAll(potentialClique);
-            newR.add(node);
+            final List<Node> newPartialClique = new ArrayList<>(partialClique.size() + 1);
+            newPartialClique.addAll(partialClique);
+            newPartialClique.add(candidate);
 
-            final Set<Node> neighbours = node.getNeighbours();
+            final Set<Node> neighbours = candidate.getNeighbours();
             final List<Node> newCandidates = getIntersection(candidates, neighbours);
             final List<Node> newAlreadyFound = getIntersection(alreadyFound, neighbours);
-            findCliques(newCandidates, newR, newAlreadyFound, cliques);
+            findCliques(newCandidates, newPartialClique, newAlreadyFound, cliques);
 
             iterator.remove();
-            potentialClique.add(node);
+            partialClique.add(candidate);
         }
     }
 

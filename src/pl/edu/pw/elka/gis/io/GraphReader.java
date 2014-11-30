@@ -44,7 +44,7 @@ public class GraphReader {
         }
         updateNodesNeighbourhood();
 
-        return new Graph(nodeMap);
+        return new Graph(nodeMap, undirectedEdgesSet);
     }
 
     private void updateNodesNeighbourhood() {

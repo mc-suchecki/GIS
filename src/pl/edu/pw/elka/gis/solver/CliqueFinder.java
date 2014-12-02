@@ -7,6 +7,7 @@ package pl.edu.pw.elka.gis.solver;
 import pl.edu.pw.elka.gis.domain.Clique;
 import pl.edu.pw.elka.gis.domain.Graph;
 import pl.edu.pw.elka.gis.domain.Node;
+import pl.edu.pw.elka.gis.solver.degeneracysorter.DegeneracySorter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,19 +16,31 @@ import java.util.Set;
 public class CliqueFinder {
     public List<Clique> findCliques(final Graph graph) {
         final List<Clique> cliques = new LinkedList<>();
-        final List<Node> potentialClique = new LinkedList<>();
-        final List<Node> candidates = new LinkedList<>();
-        final List<Node> alreadyFound = new LinkedList<>();
-        candidates.addAll(graph.getNodesList());
 
-        findCliques(candidates, potentialClique, alreadyFound, cliques);
+        final List<Node> candidates = new LinkedList<>();
+        candidates.addAll(graph.getNodesList());
+        final List<Node> alreadyFound = new LinkedList<>();
+
+        final List<Node> nodesInDegeneracyOrder = DegeneracySorter.getNodesSortedByDegeneracy(graph);
+        for (final Node node : nodesInDegeneracyOrder) {
+            final List<Node> newPartialClique = new LinkedList<>();
+            newPartialClique.add(node);
+
+            final Set<Node> neighbours = node.getNeighbours();
+            final List<Node> newCandidates = getIntersection(candidates, neighbours);
+            final List<Node> newAlreadyFound = getIntersection(alreadyFound, neighbours);
+            findCliquesWithPivoting(newPartialClique, newCandidates, newAlreadyFound, cliques);
+
+            candidates.remove(node);
+            alreadyFound.add(node);
+        }
+
         return cliques;
     }
 
     //TODO test it
-    //TODO implement vertex ordering by degeneracy at top level call
-    private void findCliques(final List<Node> candidates, final List<Node> partialClique,
-                             final List<Node> alreadyFound, final List<Clique> cliques) {
+    private void findCliquesWithPivoting(final List<Node> partialClique, final List<Node> candidates,
+                                         final List<Node> alreadyFound, final List<Clique> cliques) {
         if (candidates.isEmpty() && alreadyFound.isEmpty()) {
             cliques.add(new Clique(partialClique));
             return;
@@ -36,7 +49,7 @@ public class CliqueFinder {
         final Node pivot = findPivot(candidates, alreadyFound);
         final List<Node> candidatesWithoutPivotNeighbours = getDifference(candidates, pivot.getNeighbours());
 
-        for(final Node candidate : candidatesWithoutPivotNeighbours) {
+        for (final Node candidate : candidatesWithoutPivotNeighbours) {
             final List<Node> newPartialClique = new LinkedList<>();
             newPartialClique.addAll(partialClique);
             newPartialClique.add(candidate);
@@ -44,7 +57,7 @@ public class CliqueFinder {
             final List<Node> newCandidates = getIntersection(candidates, neighbours);
             final List<Node> newAlreadyFound = getIntersection(alreadyFound, neighbours);
 
-            findCliques(newCandidates, newPartialClique, newAlreadyFound, cliques);
+            findCliquesWithPivoting(newPartialClique, newCandidates, newAlreadyFound, cliques);
 
             candidates.remove(candidate);
             alreadyFound.add(candidate);
@@ -53,6 +66,7 @@ public class CliqueFinder {
 
     /**
      * Finds nodes which are in the candidates list and are not in the neighbours set.
+     *
      * @return nodes in candidates list which are not in neighbours set.
      */
     private List<Node> getDifference(final List<Node> candidates, final Set<Node> neighbours) {

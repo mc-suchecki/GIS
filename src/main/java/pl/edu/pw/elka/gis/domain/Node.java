@@ -1,5 +1,7 @@
 package pl.edu.pw.elka.gis.domain;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -47,7 +49,14 @@ public class Node implements Comparable<Node>{
     }
 
     @Override
-    public int compareTo(final Node n) {
+    public int compareTo(@NotNull final Node n) {
         return label.compareTo(n.label);
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "label='" + label + '\'' +
+                '}';
     }
 }

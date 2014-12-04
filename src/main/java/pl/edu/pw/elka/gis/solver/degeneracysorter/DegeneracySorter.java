@@ -4,7 +4,6 @@
  */
 package pl.edu.pw.elka.gis.solver.degeneracysorter;
 
-import pl.edu.pw.elka.gis.domain.Graph;
 import pl.edu.pw.elka.gis.domain.Node;
 
 import java.util.*;
@@ -14,8 +13,7 @@ import java.util.*;
  */
 public class DegeneracySorter {
     //TODO Code cleaning
-    public static List<Node> getNodesSortedByDegeneracy(final Graph graph) {
-        final Collection<Node> nodes = graph.getNodes();
+    public static List<Node> getNodesSortedByDegeneracy(final Collection<Node> nodes) {
         final int nodesCount = nodes.size();
 
         final int maxDegree = getMaxNodesDegree(nodes);

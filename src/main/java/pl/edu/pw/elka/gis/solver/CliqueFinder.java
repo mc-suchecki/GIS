@@ -21,7 +21,7 @@ public class CliqueFinder {
         candidates.addAll(graph.getNodes());
         final List<Node> alreadyFound = new LinkedList<>();
 
-        final List<Node> nodesInDegeneracyOrder = DegeneracySorter.getNodesSortedByDegeneracy(graph);
+        final List<Node> nodesInDegeneracyOrder = DegeneracySorter.getNodesSortedByDegeneracy(graph.getNodes());
         for (final Node node : nodesInDegeneracyOrder) {
             final List<Node> newPartialClique = new LinkedList<>();
             newPartialClique.add(node);

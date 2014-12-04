@@ -18,7 +18,7 @@ public class CliqueFinder {
         final List<Clique> cliques = new LinkedList<>();
 
         final List<Node> candidates = new LinkedList<>();
-        candidates.addAll(graph.getNodesList());
+        candidates.addAll(graph.getNodes());
         final List<Node> alreadyFound = new LinkedList<>();
 
         final List<Node> nodesInDegeneracyOrder = DegeneracySorter.getNodesSortedByDegeneracy(graph);

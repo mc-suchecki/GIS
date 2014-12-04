@@ -7,10 +7,7 @@ package pl.edu.pw.elka.gis.solver.degeneracysorter;
 import pl.edu.pw.elka.gis.domain.Graph;
 import pl.edu.pw.elka.gis.domain.Node;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class sorting a given graph's nodes by degeneracy.
@@ -18,17 +15,17 @@ import java.util.Map;
 public class DegeneracySorter {
     //TODO Code cleaning
     public static List<Node> getNodesSortedByDegeneracy(final Graph graph) {
-        final List<Node> nodesList = graph.getNodesList();
-        final int nodesCount = nodesList.size();
+        final Collection<Node> nodes = graph.getNodes();
+        final int nodesCount = nodes.size();
 
-        final int maxDegree = getMaxNodesDegree(nodesList);
+        final int maxDegree = getMaxNodesDegree(nodes);
         final Map<Node,Integer> degrees = new HashMap<>();
-        for (final Node node : nodesList) {
+        for (final Node node : nodes) {
             degrees.put(node, node.getNeighbours().size());
         }
 
         final int[] degreeBucketsStarts = new int[maxDegree];
-        for (final Node node : nodesList) {
+        for (final Node node : nodes) {
             final int nodesDegree = degrees.get(node);
             ++degreeBucketsStarts[nodesDegree];
         }
@@ -43,7 +40,7 @@ public class DegeneracySorter {
         final Node[] nodeArray = new Node[nodesCount];
         final Map<Node, Integer> positions = new HashMap<>();
 
-        for (final Node node : nodesList) {
+        for (final Node node : nodes) {
             final int nodesDegree = degrees.get(node);
             final int position = degreeBucketsStarts[nodesDegree];
             positions.put(node, position);
@@ -89,9 +86,9 @@ public class DegeneracySorter {
         }
     }
 
-    private static int getMaxNodesDegree(final List<Node> nodesList) {
+    private static int getMaxNodesDegree(final Collection<Node> nodes) {
         int maxDegree = -1;
-        for (final Node node : nodesList) {
+        for (final Node node : nodes) {
             final int nodesDegree = node.getNeighbours().size();
             if (nodesDegree > maxDegree) {
                 maxDegree = nodesDegree;

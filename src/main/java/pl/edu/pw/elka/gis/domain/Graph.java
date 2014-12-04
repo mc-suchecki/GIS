@@ -1,6 +1,9 @@
 package pl.edu.pw.elka.gis.domain;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 public class Graph {
     private final Map<String, Node> labelsToNodesMap;
@@ -11,8 +14,8 @@ public class Graph {
         this.edges = edges;
     }
 
-    public List<Node> getNodesList() {
-        return new ArrayList<>(labelsToNodesMap.values());
+    public Collection<Node> getNodes() {
+        return Collections.unmodifiableCollection(labelsToNodesMap.values());
     }
 
     @SuppressWarnings("unused")

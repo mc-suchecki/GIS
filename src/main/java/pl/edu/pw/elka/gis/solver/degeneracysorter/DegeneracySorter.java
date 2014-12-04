@@ -22,28 +22,36 @@ public class DegeneracySorter {
             degrees.put(node, node.getNeighbours().size());
         }
 
-        final int[] degreeBucketsStarts = new int[maxDegree];
+        final Integer[] degreeBucketsStarts = new Integer[maxDegree+1];//extra bucket for 0 degree
+        for (int i = 0; i < degreeBucketsStarts.length; ++i) {
+            degreeBucketsStarts[i] = 0;
+        }
+
+        //after this loop degreeBucketsStarts[degree] should give the number of nodes of this degree
         for (final Node node : nodes) {
             final int nodesDegree = degrees.get(node);
             ++degreeBucketsStarts[nodesDegree];
         }
 
+
+        //after this loop degreeBucketsStarts[i] should give the index of nodeArray where nodes of degree==i starts
         int start = 0;
-        for (int d = 0; d < maxDegree; ++d) {
-            final int numOfNodes = degreeBucketsStarts[d];
+        for (int d = 0; d <= maxDegree; ++d) {
+            final Integer numOfNodes = degreeBucketsStarts[d];
             degreeBucketsStarts[d] = start;
             start += numOfNodes;
         }
 
-        final Node[] nodeArray = new Node[nodesCount];
         final Map<Node, Integer> positions = new HashMap<>();
+        final Node[] nodeArray = new Node[nodesCount];
 
+        //after this loop nodeArray should contain sorted nodes by their degree (ascending order)
         for (final Node node : nodes) {
             final int nodesDegree = degrees.get(node);
             final int position = degreeBucketsStarts[nodesDegree];
             positions.put(node, position);
             nodeArray[position] = node;
-            ++degreeBucketsStarts[position];
+            ++degreeBucketsStarts[nodesDegree];
         }
 
         //correction of degreeBucketsStarts (now each starts where actually the next one starts)
@@ -58,30 +66,34 @@ public class DegeneracySorter {
         return Arrays.asList(nodeArray);
     }
 
-    private static void performSorting(final Map<Node, Integer> degrees, final int[] degreeBucketsStarts,
+    private static void performSorting(final Map<Node, Integer> degrees, final Integer[] degreeBucketsStarts,
                                        final Node[] nodeArray, final Map<Node, Integer> positions) {
         for (int i = 0; i < nodeArray.length; ++i) {
             final Node node = nodeArray[i];
             for (final Node neighbour : node.getNeighbours()) {
                 final Integer nodeDegree = degrees.get(node);
-                Integer neighbourDegree = degrees.get(neighbour);
-                if (nodeDegree <= neighbourDegree) {
-                    continue;
+                final Integer neighbourDegree = degrees.get(neighbour);
+                if (neighbourDegree > nodeDegree) {
+                    final Integer neighbourPosition = positions.get(neighbour);
+                    final Integer bucketsStartPosition = degreeBucketsStarts[neighbourDegree];
+                    final Node firstInTheBucket = nodeArray[bucketsStartPosition];
+                    if (!neighbour.equals(firstInTheBucket)) {
+                        swap(nodeArray, positions, neighbour, neighbourPosition, firstInTheBucket, bucketsStartPosition);
+                    }
+                    ++degreeBucketsStarts[neighbourDegree];
+                    degrees.put(neighbour,neighbourDegree);
                 }
-
-                final Integer neighbourPosition = positions.get(neighbour);
-                final Integer bucketsStartPosition = degreeBucketsStarts[neighbourDegree];
-                final Node firstInTheBucket = nodeArray[bucketsStartPosition];
-                if (!neighbour.equals(firstInTheBucket)) {
-                    positions.put(neighbour, bucketsStartPosition);
-                    positions.put(firstInTheBucket, neighbourPosition);
-                    nodeArray[neighbourPosition] = firstInTheBucket;
-                    nodeArray[bucketsStartPosition] = neighbour;
-                }
-                ++degreeBucketsStarts[neighbourDegree];
-                --neighbourDegree;
             }
         }
+    }
+
+    private static void swap(final Node[] nodeArray, final Map<Node, Integer> positions,
+                             final Node neighbour, final Integer neighbourPosition,
+                             final Node firstInTheBucket, final Integer bucketsStartPosition) {
+        positions.put(neighbour, bucketsStartPosition);
+        positions.put(firstInTheBucket, neighbourPosition);
+        nodeArray[neighbourPosition] = firstInTheBucket;
+        nodeArray[bucketsStartPosition] = neighbour;
     }
 
     private static int getMaxNodesDegree(final Collection<Node> nodes) {

@@ -24,11 +24,12 @@ public class Node implements Comparable<Node>{
         return Collections.unmodifiableSet(neighbours);
     }
 
-    /**
-     * @return true if node wasn't already a neighbour for this node.
-     */
-    public boolean addNeighbour(final Node node) {
-        return neighbours.add(node);
+    public void addNeighbour(final Node node) {
+        neighbours.add(node);
+    }
+
+    public void addNeighbours(final Node... nodes) {
+        Collections.addAll(neighbours, nodes);
     }
 
     @Override

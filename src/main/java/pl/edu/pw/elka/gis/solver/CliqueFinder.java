@@ -9,11 +9,18 @@ import pl.edu.pw.elka.gis.domain.Graph;
 import pl.edu.pw.elka.gis.domain.Node;
 import pl.edu.pw.elka.gis.solver.degeneracysorter.DegeneracySorter;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 public class CliqueFinder {
+    private final DegeneracySorter degeneracySorter;
+
+    public CliqueFinder(final DegeneracySorter degeneracySorter) {
+        this.degeneracySorter = degeneracySorter;
+    }
+
     public List<Clique> findCliques(final Graph graph) {
         final List<Clique> cliques = new LinkedList<>();
 
@@ -21,7 +28,7 @@ public class CliqueFinder {
         candidates.addAll(graph.getNodes());
         final List<Node> alreadyFound = new LinkedList<>();
 
-        final List<Node> nodesInDegeneracyOrder = DegeneracySorter.getNodesSortedByDegeneracy(graph.getNodes());
+        final List<Node> nodesInDegeneracyOrder = degeneracySorter.getNodesSortedByDegeneracy(graph.getNodes());
         for (final Node node : nodesInDegeneracyOrder) {
             final List<Node> newPartialClique = new LinkedList<>();
             newPartialClique.add(node);
@@ -42,7 +49,8 @@ public class CliqueFinder {
     private void findCliquesWithPivoting(final List<Node> partialClique, final List<Node> candidates,
                                          final List<Node> alreadyFound, final List<Clique> cliques) {
         if (candidates.isEmpty() && alreadyFound.isEmpty()) {
-            cliques.add(new Clique(partialClique));
+            final Clique newClique = new Clique(new HashSet<>(partialClique));
+            cliques.add(newClique);
             return;
         }
 

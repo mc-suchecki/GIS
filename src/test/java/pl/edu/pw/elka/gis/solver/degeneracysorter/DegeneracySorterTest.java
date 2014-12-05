@@ -7,6 +7,7 @@ import pl.edu.pw.elka.gis.domain.Node;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
@@ -15,85 +16,48 @@ import static org.junit.Assert.assertTrue;
  * Test class for DegeneracySorter.
  */
 public class DegeneracySorterTest {
-    private List<Node> nodesMocks;
+    private Node[] nodesMocks;
+    private DegeneracySorter degeneracySorter;
 
     @Before
     public void setUp() throws Exception {
         this.nodesMocks = makeNodesMocks();
+        this.degeneracySorter = new DegeneracySorter();
     }
 
-    private static List<Node> makeNodesMocks() {
+    private static Node[] makeNodesMocks() {
         final Node[] nodesMocks = new Node[7];
         for (int i = 0; i < nodesMocks.length; ++i) {
             nodesMocks[i] = new Node(String.valueOf(i));
         }
 
-        nodesMocks[0].addNeighbour(nodesMocks[1]);
-        nodesMocks[0].addNeighbour(nodesMocks[2]);
-        nodesMocks[0].addNeighbour(nodesMocks[3]);
-        nodesMocks[0].addNeighbour(nodesMocks[4]);
+        nodesMocks[0].addNeighbours(nodesMocks[1], nodesMocks[2], nodesMocks[3], nodesMocks[4]);
+        nodesMocks[1].addNeighbours(nodesMocks[0]);
+        nodesMocks[2].addNeighbours(nodesMocks[0]);
+        nodesMocks[3].addNeighbours(nodesMocks[0]);
+        nodesMocks[4].addNeighbours(nodesMocks[0], nodesMocks[5], nodesMocks[6]);
+        nodesMocks[5].addNeighbours(nodesMocks[4], nodesMocks[6]);
+        nodesMocks[6].addNeighbours(nodesMocks[4], nodesMocks[5]);
 
-        nodesMocks[1].addNeighbour(nodesMocks[0]);
-
-        nodesMocks[2].addNeighbour(nodesMocks[0]);
-
-        nodesMocks[3].addNeighbour(nodesMocks[0]);
-
-        nodesMocks[4].addNeighbour(nodesMocks[0]);
-        nodesMocks[4].addNeighbour(nodesMocks[5]);
-        nodesMocks[4].addNeighbour(nodesMocks[6]);
-
-        nodesMocks[5].addNeighbour(nodesMocks[4]);
-        nodesMocks[5].addNeighbour(nodesMocks[6]);
-
-        nodesMocks[6].addNeighbour(nodesMocks[4]);
-        nodesMocks[6].addNeighbour(nodesMocks[5]);
-
-        return Arrays.asList(nodesMocks);
+        return nodesMocks;
     }
 
     @Test
     public void testGetNodesSortedByDegeneracy() throws Exception {
-        final List<Node> sortedNodesList = DegeneracySorter.getNodesSortedByDegeneracy(nodesMocks);
+        final List<Node> sortedNodesList = degeneracySorter.getNodesSortedByDegeneracy(Arrays.asList(nodesMocks));
         final Node[] sortedNodes = sortedNodesList.toArray(new Node[sortedNodesList.size()]);
 
         //expected
-        final Set<String> firstGroupLabels = Sets.newHashSet("1", "2", "3");
-        final Set<String> secondGroupLabels = Sets.newHashSet("0");
-        final Set<String> thirdGroupLabels = Sets.newHashSet("4", "5", "6");
+        final Set<Node> firstGroup = Sets.newHashSet(nodesMocks[1], nodesMocks[2], nodesMocks[3]);
+        final Set<Node> secondGroup = Sets.newHashSet(nodesMocks[0]);
+        final Set<Node> thirdGroup = Sets.newHashSet(nodesMocks[4], nodesMocks[5], nodesMocks[6]);
 
-        boolean result = true;
-        for (int i = 0; i < sortedNodes.length; ++i) {
-            final String label = sortedNodes[i].getLabel();
-            if(i < 3) {
-                if (!firstGroupLabels.contains(label)) {
-                    result = false;
-                    break;
-                } else {
-                    firstGroupLabels.remove(label);
-                }
-            }
-            else if(i==3)
-            {
-                if (!secondGroupLabels.contains(label)) {
-                    result = false;
-                    break;
-                } else {
-                    secondGroupLabels.remove(label);
-                }
-            }
-            else
-            {
-                if (!thirdGroupLabels.contains(label)) {
-                    result = false;
-                    break;
-                } else {
-                    thirdGroupLabels.remove(label);
-                }
-            }
-        }
+        final boolean testPassed = Objects.equals(nodesMocks.length, sortedNodes.length)
+                             && firstGroup.containsAll(sortedNodesList.subList(0,3))
+                             && secondGroup.containsAll(sortedNodesList.subList(3, 4))
+                             && thirdGroup.containsAll(sortedNodesList.subList(4,nodesMocks.length));
 
-        assertTrue(result && firstGroupLabels.isEmpty() && secondGroupLabels.isEmpty() && thirdGroupLabels.isEmpty());
+        assertTrue("Expected: (1 2 3) 0 (4 5 6), got: " + sortedNodesList, testPassed);
     }
 }
 

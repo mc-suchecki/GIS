@@ -17,14 +17,13 @@ import java.util.Set;
  * Reads directed graph and converts it to undirected graph by substituting
  * each pair of edges (i,j) and (j,i) with a single undirected edge (unpaired
  * directed edges are removed from the result graph).
- * <p/>
+ *
  * Source file contains information about directed graph which is defined
  * in the following manner: each line contains a single directed edge
  * in format LABEL LABEL where the former label is the label of a source node
  * and the latter is the label of a destination node.
  */
 public class GraphReader {
-    private static final String INPUT_FILE_NAME = "input_graph.txt";
     private static final String LINE_FORMAT_MESSAGE =
             "Each line should have the following format: \"LABEL LABEL\n\"" +
                     "where former is the label of source node and the latter is the label of destination node.";
@@ -33,10 +32,10 @@ public class GraphReader {
     private Set<DirectedEdge> directedEdgesSet;
     private Set<UndirectedEdge> undirectedEdgesSet;
 
-    public Graph read() throws IOException, MultipleInvocationException, InvalidDataFormatException {
+    public Graph read(final String inputFileName) throws IOException, MultipleInvocationException, InvalidDataFormatException {
         initReader();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(INPUT_FILE_NAME))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFileName))) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
                 processLine(strLine);
@@ -44,7 +43,7 @@ public class GraphReader {
         }
         updateNodesNeighbourhood();
 
-        return new Graph(nodeMap, undirectedEdgesSet);
+        return new Graph(nodeMap.values());
     }
 
     private void updateNodesNeighbourhood() {

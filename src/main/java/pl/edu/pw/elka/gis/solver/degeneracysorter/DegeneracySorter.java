@@ -12,8 +12,7 @@ import java.util.*;
  * Class sorting a given graph's nodes by degeneracy.
  */
 public class DegeneracySorter {
-    //TODO Code cleaning
-    public static List<Node> getNodesSortedByDegeneracy(final Collection<Node> nodes) {
+    public List<Node> getNodesSortedByDegeneracy(final Collection<Node> nodes) {
         final int nodesCount = nodes.size();
 
         final int maxDegree = getMaxNodesDegree(nodes);
@@ -66,7 +65,7 @@ public class DegeneracySorter {
         return Arrays.asList(nodeArray);
     }
 
-    private static void performSorting(final Map<Node, Integer> degrees, final Integer[] degreeBucketsStarts,
+    private void performSorting(final Map<Node, Integer> degrees, final Integer[] degreeBucketsStarts,
                                        final Node[] nodeArray, final Map<Node, Integer> positions) {
         for (int i = 0; i < nodeArray.length; ++i) {
             final Node node = nodeArray[i];
@@ -81,13 +80,13 @@ public class DegeneracySorter {
                         swap(nodeArray, positions, neighbour, neighbourPosition, firstInTheBucket, bucketsStartPosition);
                     }
                     ++degreeBucketsStarts[neighbourDegree];
-                    degrees.put(neighbour,neighbourDegree);
+                    degrees.put(neighbour,(neighbourDegree-1));
                 }
             }
         }
     }
 
-    private static void swap(final Node[] nodeArray, final Map<Node, Integer> positions,
+    private void swap(final Node[] nodeArray, final Map<Node, Integer> positions,
                              final Node neighbour, final Integer neighbourPosition,
                              final Node firstInTheBucket, final Integer bucketsStartPosition) {
         positions.put(neighbour, bucketsStartPosition);
@@ -96,7 +95,7 @@ public class DegeneracySorter {
         nodeArray[bucketsStartPosition] = neighbour;
     }
 
-    private static int getMaxNodesDegree(final Collection<Node> nodes) {
+    private int getMaxNodesDegree(final Collection<Node> nodes) {
         int maxDegree = -1;
         for (final Node node : nodes) {
             final int nodesDegree = node.getNeighbours().size();

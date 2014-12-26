@@ -33,15 +33,13 @@ def generateRandomIntegers(desiredCount, desiredSum, lowerBound, upperBound):
 
   return integers
 
-# generates random directed graph with desired amount of verticles
+# generates random directed graph with desired number of verticles
 # and density, after that it saves the edges to selected filename
-# verticles count is max 26, because of conversion to letters
 def saveRandomGraphToFile(filename, verticlesCount, density):
   graphFile = open(filename, "w")
 
   # generate verticles
-  verticles = list(string.ascii_uppercase)
-  verticles = verticles[:verticlesCount]
+  verticles = list(range(verticlesCount))
 
   # calculate desired number of edges from desired graph density
   maxPossibleEdgeCount = verticlesCount * (verticlesCount - 1)
@@ -58,7 +56,7 @@ def saveRandomGraphToFile(filename, verticlesCount, density):
     possibleSuccessors = list(verticles)
     possibleSuccessors.remove(verticle)     # avoid loops
     for successor in random.sample(possibleSuccessors, degree):
-      graphFile.write(verticle + " " + successor + "\n")
+      graphFile.write(str(verticle) + " " + str(successor) + "\n")
 
   graphFile.close()
 

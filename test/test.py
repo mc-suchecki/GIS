@@ -40,9 +40,9 @@ def collectAverageTime(graphFilenames):
   return averageTime
 
 # plots a simple graph
-def plotGraph(data, xlabel, ylabel, number):
+def plotGraph(data, xlabel, ylabel, number, linestyle, marker):
   plot.figure(number)
-  plot.plot(list(data.keys()), list(data.values()), linestyle="",marker="o")
+  plot.plot(list(data.keys()), list(data.values()), linestyle=linestyle, marker=marker)
   plot.ylabel(ylabel)
   plot.xlabel(xlabel)
   plot.show()
@@ -61,13 +61,13 @@ densities = numpy.arange(0.01, 1.01, 0.01)
 degeneracies = range(1, 19)
 
 # test how changing graph size affects performance
-#print("Testing performance depending on graph size...")
-#results = {}
-#for size in sizes:
-  #displayProgress(size, sizes[-1])
-  #graphFilenames = graph.generateRandomGraphsWithDensity(repetitions, size, defaultDensity)
-  #results[size] = collectAverageTime(graphFilenames)
-#plotGraph(results, "Rozmiar grafu (liczba wierzchołków)", "Czas wykonywania (ms)", 0)
+print("Testing performance depending on graph size...")
+results = {}
+for size in sizes:
+  displayProgress(size, sizes[-1])
+  graphFilenames = graph.generateRandomGraphsWithDensity(repetitions, size, defaultDensity)
+  results[size] = collectAverageTime(graphFilenames)
+plotGraph(results, "Rozmiar grafu (liczba wierzchołków)", "Czas wykonywania (ms)", 0, "-", "")
 
 # test how changing graph density affects performance
 print("Testing performance depending on graph density...")
@@ -76,16 +76,16 @@ for density in densities:
   displayProgress(density * 100, len(densities))
   graphFilenames = graph.generateRandomGraphsWithDensity(repetitions, defaultSize, density)
   results[density] = collectAverageTime(graphFilenames)
-plotGraph(results, "Gęstość grafu (liczba krawędzi / największa możliwa liczba krawędzi)", "Czas wykonywania (ms)", 1)
+plotGraph(results, "Gęstość grafu (liczba krawędzi / największa możliwa liczba krawędzi)", "Czas wykonywania (ms)", 1, "", "o")
 
 # test how changing graph density affects performance
-#print("Testing performance depending on graph degeneracy...")
-#results = {}
-#for degeneracy in degeneracies:
-  #displayProgress(degeneracy, len(degeneracies))
-  #graphFilenames = graph.generateRandomGraphsWithDegeneracy(repetitions, defaultSize, degeneracy)
-  #results[degeneracy] = collectAverageTime(graphFilenames)
-#plotGraph(results, "Degeneracja grafu", "Czas wykonywania (ms)", 2)
+print("Testing performance depending on graph degeneracy...")
+results = {}
+for degeneracy in degeneracies:
+  displayProgress(degeneracy, len(degeneracies))
+  graphFilenames = graph.generateRandomGraphsWithDegeneracy(repetitions, defaultSize, degeneracy)
+  results[degeneracy] = collectAverageTime(graphFilenames)
+plotGraph(results, "Degeneracja grafu", "Czas wykonywania (ms)", 2, "-", "")
 
 # remove graph files
 for filename in graphFilenames:

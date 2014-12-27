@@ -12,7 +12,7 @@ import matplotlib.pyplot as plot
 
 ############################## PARAMETERS #################################
 
-repetitions = 10    # how many times solver will be re-run to calculate avg
+repetitions = 20    # how many times solver will be re-run to calculate avg
 
 ############################## FUNCTIONS ##################################
 
@@ -54,28 +54,38 @@ def displayProgress(currentNumber, lastNumber):
 ################################ SCRIPT ################################
 
 # graph properties to test
-defaultSize = 10
+defaultSize = 20
 defaultDensity = 0.5
 sizes = range(5, 50)
 densities = numpy.arange(0.01, 1.01, 0.01)
+degeneracies = range(1, 19)
 
 # test how changing graph size affects performance
-print("Testing performance depending on graph size...")
-results = {}
-for size in sizes:
-  displayProgress(size, sizes[-1])
-  graphFilenames = graph.saveRandomGraphsToFiles(repetitions, size, defaultDensity)
-  results[size] = collectAverageTime(graphFilenames)
-plotGraph(results, "Rozmiar grafu (liczba wierzchołków)", "Czas wykonywania (ms)", 0)
+#print("Testing performance depending on graph size...")
+#results = {}
+#for size in sizes:
+  #displayProgress(size, sizes[-1])
+  #graphFilenames = graph.generateRandomGraphsWithDensity(repetitions, size, defaultDensity)
+  #results[size] = collectAverageTime(graphFilenames)
+#plotGraph(results, "Rozmiar grafu (liczba wierzchołków)", "Czas wykonywania (ms)", 0)
 
 # test how changing graph density affects performance
 print("Testing performance depending on graph density...")
 results = {}
 for density in densities:
   displayProgress(density * 100, len(densities))
-  graphFilenames = graph.saveRandomGraphsToFiles(repetitions, defaultSize, density)
+  graphFilenames = graph.generateRandomGraphsWithDensity(repetitions, defaultSize, density)
   results[density] = collectAverageTime(graphFilenames)
 plotGraph(results, "Gęstość grafu (liczba krawędzi / największa możliwa liczba krawędzi)", "Czas wykonywania (ms)", 1)
+
+# test how changing graph density affects performance
+#print("Testing performance depending on graph degeneracy...")
+#results = {}
+#for degeneracy in degeneracies:
+  #displayProgress(degeneracy, len(degeneracies))
+  #graphFilenames = graph.generateRandomGraphsWithDegeneracy(repetitions, defaultSize, degeneracy)
+  #results[degeneracy] = collectAverageTime(graphFilenames)
+#plotGraph(results, "Degeneracja grafu", "Czas wykonywania (ms)", 2)
 
 # remove graph files
 for filename in graphFilenames:

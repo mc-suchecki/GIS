@@ -5,13 +5,6 @@ import random
 import string
 import itertools
 
-# function from Itertools Recipes
-def pairwise(iterable):
-  "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-  a, b = itertools.tee(iterable)
-  next(b, None)
-  return zip(a, b)
-
 # generates a list of (pseudo) random integers of desired length and sum
 # (all of the generated integers are in between lowerBound and upperBound)
 # throws ValueError from randrange() if operation is not possible (too restrict bounds)
@@ -35,7 +28,7 @@ def generateRandomIntegers(desiredCount, desiredSum, lowerBound, upperBound):
 
 # generates random directed graph with desired number of verticles
 # and density, after that it saves the edges to selected filename
-def saveRandomGraphToFile(filename, verticlesCount, density):
+def generateAndSaveGraphWithDesiredDensity(filename, verticlesCount, density):
   graphFile = open(filename, "w")
 
   # generate verticles
@@ -46,12 +39,12 @@ def saveRandomGraphToFile(filename, verticlesCount, density):
   desiredEdgeCount = int(density * maxPossibleEdgeCount)
 
   # generate random degree in range [0, verticlesCount-1] for every vertex 
-  # ensuring that all of the degrees sum to desiredEdgeCount
+  # while ensuring that all of the degrees sum up to desiredEdgeCount
   degrees = generateRandomIntegers(verticlesCount, desiredEdgeCount, 0, verticlesCount - 1)
 
-  # for every verticle, generate random number of its successors,
-  # then take that number of verticles from verticles set as successors set
-  # and save resulting pairs (edges) to file with desired name
+  # generate dictionary containing vertex and its degree pairs, then
+  # iterate over it, drawing <degree> verticles from all possible ones
+  # and save resulting vertex pairs (edges) to file with desired name
   for verticle, degree in dict(zip(verticles, degrees)).items():
     possibleSuccessors = list(verticles)
     possibleSuccessors.remove(verticle)     # avoid loops
@@ -60,11 +53,56 @@ def saveRandomGraphToFile(filename, verticlesCount, density):
 
   graphFile.close()
 
-# generates multiple random graphs and saves them to files
-def saveRandomGraphsToFiles(graphsCount, verticlesCount, density):
+# generates random directed graph with desired number of verticles
+# and degeneracy, after that it saves the edges to selected filename
+def generateAndSaveGraphWithDesiredDegeneracy(filename, verticlesCount, degeneracy):
+  graphFile = open(filename, "w")
+
+  # generate verticles
+  verticles = list(range(verticlesCount))
+  possibleSuccessors = verticles
+
+  # generate random degree in range [0, degeneracy] for every vertex to satisfy
+  # degeneracy criterion (there should be at least 1 vertex with degree = deg.)
+  degrees = [degeneracy]
+  for _ in range(verticlesCount - 1):
+    degrees.append(random.randint(0, degeneracy))
+  degrees.sort(reverse=True)
+
+  # for every verticle, generate random number of its successors (less than
+  # degeneracy), then take that number of verticles from successors set and
+  # save resulting pairs (edges) to file with desired name as two-way edges
+  # - from the rest, draw a random number to generate one-way edges
+  for verticle, degree in dict(zip(verticles, degrees)).items():
+    possibleSuccessors.remove(verticle)     # prevent loops and duplicate edges
+    twoWaySuccessors = random.sample(possibleSuccessors, min(degree, len(possibleSuccessors)))
+    oneWaySuccessors = [item for item in possibleSuccessors if item not in twoWaySuccessors]
+
+    # generate two way edges
+    for successor in twoWaySuccessors:
+      graphFile.write(str(verticle) + " " + str(successor) + "\n")
+      graphFile.write(str(successor) + " " + str(verticle) + "\n")
+
+    # generate couple random one-way edges
+    for successor in random.sample(oneWaySuccessors, random.randint(0, len(oneWaySuccessors))):
+      graphFile.write(str(verticle) + " " + str(successor) + "\n")
+
+  graphFile.close()
+
+# generates multiple random graphs with desired density and saves them to files
+def generateRandomGraphsWithDensity(graphsCount, verticlesCount, density):
   filenamesList = []
   for number in range(0, graphsCount):
     filename = './graph' + str(number) + '.txt'
-    saveRandomGraphToFile(filename, verticlesCount, density)
+    generateAndSaveGraphWithDesiredDensity(filename, verticlesCount, density)
+    filenamesList.append(filename)
+  return filenamesList
+
+# generates multiple random graphs with desired degeneracy and saves them to files
+def generateRandomGraphsWithDegeneracy(graphsCount, verticlesCount, degeneracy):
+  filenamesList = []
+  for number in range(0, graphsCount):
+    filename = './graph' + str(number) + '.txt'
+    generateAndSaveGraphWithDesiredDegeneracy(filename, verticlesCount, degeneracy)
     filenamesList.append(filename)
   return filenamesList

@@ -218,7 +218,7 @@ D C
 \end{lstlisting}
 
 \section{Część 3}
-W~ramach tej części projektu zostały stworzone testy algorytmu, sprawdzające zarówno jego poprawność, jak i~wydajność w~zależności od różnych czynników. Testy poprawności zostały wykonane w~języku Java, z~użyciem bibliotek takich, jak: \textit{Maven, ...} \textbf{TODO Jacek}. Z~kolei testy wydajnościowe zostały napisane w~języku skryptowym Python, z~wykorzystaniem bibliotek takich, jak: \textit{matplotlib} oraz \textit{numpy}. Generowanie grafów testowych zostało wykonane własnoręcznie, również w~języku Python. Testy te miały na celu wyznaczenie wydajności algorytmu w~zależności od trzech czynników:
+W~ramach tej części projektu zostały stworzone testy algorytmu, sprawdzające zarówno jego poprawność, jak i~wydajność w~zależności od różnych czynników. Testy poprawności zostały wykonane w~języku Java, z~użyciem bibliotek: \textit{JUnit} oraz \textit{Mockito}. Z~kolei testy wydajnościowe zostały napisane w~języku skryptowym Python, z~wykorzystaniem bibliotek takich, jak: \textit{matplotlib} oraz \textit{numpy}. Generowanie grafów testowych zostało wykonane własnoręcznie, również w~języku Python. Testy te miały na celu wyznaczenie wydajności algorytmu w~zależności od trzech czynników:
 
 \begin{itemize}
   \item rozmiaru grafu,
@@ -229,7 +229,18 @@ W~ramach tej części projektu zostały stworzone testy algorytmu, sprawdzające
 Wyniki testowania algorytmu zostały przedstawione w~kolejnych sekcjach.
 
 \subsection{Testy poprawności}
-\textbf{TODO Jacek}
+W celu sprawdzenia poprawności działania algorytmu wykonano dwa testy.
+Pierwszy z nich miał na celu sprawdzić czy w zadanym grafie (rys. \textbf{TODO})
+zostaną odnalezione odpowiednie kliki: (\textbf{TODO formatowanie}) 4,6,5; 0,1; 0,2; 0,3; 0,4;
+
+Drugi z testów miał za zadanie sprawdzić czy algorytm sortowania
+węzłów względem ich degeneracji działa zgodnie z oczekiwaniami.
+W tym celu przygotowano graf (rys. \textbf{TODO}) i~spodziewano się!uzyskać
+wierzchołki taką listę wierzchołków taką, że~na~początku tej~listy
+znajdą się~wierzchołki o~numerach 1,2 i~3 (w~dowolnej kolejności), po~nich
+wystąpi wierzchołek~0, a~po~nim wystąpią wierzchołki o~numerach 4,5 i 6.
+
+Oba testy zakończyły się~powodzeniem.
 
 \newpage
 \subsection{Testy wydajnościowe}

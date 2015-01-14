@@ -226,19 +226,46 @@ W~ramach tej części projektu zostały stworzone testy algorytmu, sprawdzające
   \item degeneracji grafu.
 \end{itemize}
 
-Wyniki testowania algorytmu zostały przedstawione w~kolejnych sekcjach.
-
 \subsection{Testy poprawności}
 W celu sprawdzenia poprawności działania algorytmu wykonano dwa testy.
-Pierwszy z nich miał na celu sprawdzić czy w zadanym grafie (rys. \textbf{TODO})
-zostaną odnalezione odpowiednie kliki: (\textbf{TODO formatowanie}) 4,6,5; 0,1; 0,2; 0,3; 0,4;
+Pierwszy z nich miał na celu sprawdzić czy w zadanym grafie:
 
-Drugi z testów miał za zadanie sprawdzić czy algorytm sortowania
-węzłów względem ich degeneracji działa zgodnie z oczekiwaniami.
-W tym celu przygotowano graf (rys. \textbf{TODO}) i~spodziewano się!uzyskać
-wierzchołki taką listę wierzchołków taką, że~na~początku tej~listy
-znajdą się~wierzchołki o~numerach 1,2 i~3 (w~dowolnej kolejności), po~nich
-wystąpi wierzchołek~0, a~po~nim wystąpią wierzchołki o~numerach 4,5 i 6.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
+    thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+
+    \node[main node] (0) {A};
+    \node[main node] (1) [left of=0] {B};
+    \node[main node] (2) [above of=0] {C};
+    \node[main node] (3) [right of=0] {D};
+    \node[main node] (4) [below of=0] {E};
+    \node[main node] (5) [below left of=4] {F};
+    \node[main node] (6) [below right of=4] {G};
+
+    \path[every node/.style={font=\sffamily\small}]
+    (0) edge node {} (1)
+    edge node {} (2)
+    edge node {} (3)
+    edge node {} (4)
+    (1) edge node {} (0)
+    (2) edge node {} (0)
+    (3) edge node {} (0)
+    (4) edge node {} (0)
+    edge node {} (5)
+    edge node {} (6)
+    (5) edge node {} (4)
+    edge node {} (6)
+    (6) edge node {} (4)
+    edge node {} (5);
+  \end{tikzpicture}
+  \caption{Graf utworzony na potrzeby testów poprawności}
+  \label{figure:testGraph}
+\end{figure}
+
+zostaną odnalezione odpowiednie kliki: (E, F, G), (A, B), (A, C), (A, D) oraz (A, E).\\
+
+Drugi z~testów miał za zadanie sprawdzić, czy algorytm sortowania węzłów względem ich degeneracji działa zgodnie z~oczekiwaniami.  W~tym celu użyto ponownie grafu znajdującego się na Rysunku~\ref{figure:testGraph} i~spodziewano się uzyskać listę wierzchołków taką, że~na~początku tej~listy znajdą się~wierzchołki o~etykietach B, C oraz D (w~dowolnej kolejności), po~nich wystąpi wierzchołek~A, natomiast po nim wystąpią wierzchołki o~etykietach E, F oraz G.\\
 
 Oba testy zakończyły się~powodzeniem.
 
@@ -283,12 +310,12 @@ Służą one odpowiednio do: uruchomienia algorytmu z~zadanym grafem, zmierzenia
 \begin{enumerate}
   \item wyczyszczenie pamięci przechowującej rezultaty,
   \item dla każdej testowanej wartości parametru:
-  \begin{enumerate}
-    \item wygenerowanie 20 grafów o zadanych parametrach,
-    \item uruchomienie algorytmu dla każdego z~wygenerowanych grafów,
-    \item obliczenie średniej z~uzyskanych czasów wykonania,
-    \item zapisanie średniej wraz z~testowaną wartością do pamięci.
-  \end{enumerate}
+    \begin{enumerate}
+      \item wygenerowanie 20 grafów o zadanych parametrach,
+      \item uruchomienie algorytmu dla każdego z~wygenerowanych grafów,
+      \item obliczenie średniej z~uzyskanych czasów wykonania,
+      \item zapisanie średniej wraz z~testowaną wartością do pamięci.
+    \end{enumerate}
   \item wyświetlenie wykresu.
 \end{enumerate}
 
@@ -367,8 +394,8 @@ plotGraph(results, "Rozmiar grafu (liczba wierzcholkow)", "Czas wykonywania (ms)
 W~wyniku jego działania uzyskano następujący wykres:
 
 \begin{figure}[H]
-\includegraphics[trim = 0mm 2mm 0mm 12mm, clip, width=14cm]{img/size.pdf}
-\caption{Wpływ rozmiaru grafu na wydajność algorytmu.}
+  \includegraphics[trim = 0mm 2mm 0mm 12mm, clip, width=14cm]{img/size.pdf}
+  \caption{Wpływ rozmiaru grafu na wydajność algorytmu.}
 \end{figure}
 
 Po przeanalizowaniu wykresu widoczny jest oczywiście wyraźny wzrost czasu wykonywania algorytmu podczas wzrostu rozmiaru grafu. Po dokładnym przyjrzeniu się kształtowi otrzymanego wykresu, można zaryzykować stwierdzenie, że złożoność algorytmu jest liniowa w~zależności od rozmiaru grafu.
@@ -383,15 +410,15 @@ for density in densities:
   graphFilenames = graph.generateRandomGraphsWithDensity(count, size, density)
   results[size] = collectAverageTime(graphFilenames)
 plotGraph(results,
-          "Gestosc grafu (liczba krawedzi / najwieksza mozliwa liczba krawedzi)",
-          "Czas wykonywania (ms)")
+  "Gestosc grafu (liczba krawedzi / najwieksza mozliwa liczba krawedzi)",
+  "Czas wykonywania (ms)")
 \end{lstlisting}
 
 W~wyniku jego działania uzyskano następujący wykres:
 
 \begin{figure}[H]
-\includegraphics[trim = 0mm 2mm 0mm 12mm, clip, width=14cm]{img/density.pdf}
-\caption{Wpływ gęstości grafu na wydajność algorytmu.}
+  \includegraphics[trim = 0mm 2mm 0mm 12mm, clip, width=14cm]{img/density.pdf}
+  \caption{Wpływ gęstości grafu na wydajność algorytmu.}
 \end{figure}
 
 Na wykresie nie zauważyliśmy wyraźnej i~jednocześnie jednoznacznej zależności wydajności algorytmu w~funkcji gęstości testowanego grafu. Można oczywiście zauważyć wyraźny wzrost czasu wykonywania algorytmu podczas wzrostu gęstości grafu, jednakże trudno tu o~jednoznaczne stwierdzenie złożoności wykładniczej z~racji na dość duży rozrzut uzyskiwanych wyników (pomimo ich uśredniania).
@@ -412,8 +439,8 @@ plotGraph(results, "Degeneracja grafu", "Czas wykonywania (ms)")
 W~wyniku jego działania uzyskano następujący wykres:
 
 \begin{figure}[H]
-\includegraphics[trim = 0mm 2mm 0mm 12mm, clip, width=14cm]{img/degeneracy.pdf}
-\caption{Wpływ degeneracji grafu na wydajność algorytmu.}
+  \includegraphics[trim = 0mm 2mm 0mm 12mm, clip, width=14cm]{img/degeneracy.pdf}
+  \caption{Wpływ degeneracji grafu na wydajność algorytmu.}
 \end{figure}
 
 Jak widać, wyniki są zgodne z~założeniami teoretycznymi nt. algorytmu -- złożoność algorytmu w~zależności od degeneracji grafu jest wykładnicza.
